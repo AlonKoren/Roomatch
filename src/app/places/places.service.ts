@@ -12,21 +12,27 @@ export class PlacesService {
           'Manhattan Mansion',
           'In the heart of New York City.',
           'https://www.filmlocationswanted.com/wp-content/uploads/2015/06/manhattan-estate-mansion60.jpg',
-          149.99
+          149.99,
+          new Date('2019-01-01'),
+          new Date('2019-12-31')
       ),
     new Place(
           'p2',
           'L\'Amour Toujours',
           'A romantic place in Paris!',
           'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTiHqzuPiuIHSPSVhAh3TpQQbLAeYWX6aQiYQOZjvRHKgfYwhkE&usqp=CAU',
-          189.99
+          189.99,
+          new Date('2019-01-01'),
+          new Date('2019-12-31')
       ),
     new Place(
           'p3',
           'The Foggy Palace',
           'Not your average city trip!',
           'https://i.pinimg.com/originals/9c/88/44/9c8844b217bdb6c17db14f51ad2e51a5.jpg',
-          99.99
+          99.99,
+          new Date('2019-01-01'),
+          new Date('2019-12-31')
       )
   ];
 
