@@ -46,7 +46,7 @@ export class PlacesService {
     return this._places.asObservable();
   }
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService) {}
 
   getPlace(id: string) {
     return this.places.pipe(
