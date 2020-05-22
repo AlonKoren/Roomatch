@@ -5,49 +5,90 @@ import {BehaviorSubject} from 'rxjs';
 import {delay, map, switchMap, take, tap} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 
+// [
+//   new Place(
+//       'p1',
+//       'Manhattan Mansion',
+//       'In the heart of New York City.',
+//       'https://www.filmlocationswanted.com/wp-content/uploads/2015/06/manhattan-estate-mansion60.jpg',
+//       149.99,
+//       new Date('2019-01-01'),
+//       new Date('2019-12-31'),
+//       'abc'
+//   ),
+//   new Place(
+//       'p2',
+//       'L\'Amour Toujours',
+//       'A romantic place in Paris!',
+//       'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTiHqzuPiuIHSPSVhAh3TpQQbLAeYWX6aQiYQOZjvRHKgfYwhkE&usqp=CAU',
+//       189.99,
+//       new Date('2019-01-01'),
+//       new Date('2019-12-31'),
+//       'abc'
+//   ),
+//   new Place(
+//       'p3',
+//       'The Foggy Palace',
+//       'Not your average city trip!',
+//       'https://i.pinimg.com/originals/9c/88/44/9c8844b217bdb6c17db14f51ad2e51a5.jpg',
+//       99.99,
+//       new Date('2019-01-01'),
+//       new Date('2019-12-31'),
+//       'abc'
+//   )
+// ]
+
+interface PlaceData {
+  availableFrom: string;
+  availableTo: string;
+  description: string;
+  imageUrl: string;
+  price: number;
+  title: string;
+  userId: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class PlacesService {
   // tslint:disable-next-line:variable-name
-  private _places = new BehaviorSubject<Place[]>([
-    new Place(
-        'p1',
-        'Manhattan Mansion',
-        'In the heart of New York City.',
-        'https://www.filmlocationswanted.com/wp-content/uploads/2015/06/manhattan-estate-mansion60.jpg',
-        149.99,
-        new Date('2019-01-01'),
-        new Date('2019-12-31'),
-        'abc'
-    ),
-    new Place(
-        'p2',
-        'L\'Amour Toujours',
-        'A romantic place in Paris!',
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTiHqzuPiuIHSPSVhAh3TpQQbLAeYWX6aQiYQOZjvRHKgfYwhkE&usqp=CAU',
-        189.99,
-        new Date('2019-01-01'),
-        new Date('2019-12-31'),
-        'abc'
-    ),
-    new Place(
-        'p3',
-        'The Foggy Palace',
-        'Not your average city trip!',
-        'https://i.pinimg.com/originals/9c/88/44/9c8844b217bdb6c17db14f51ad2e51a5.jpg',
-        99.99,
-        new Date('2019-01-01'),
-        new Date('2019-12-31'),
-        'abc'
-    )
-  ]);
+  private _places = new BehaviorSubject<Place[]>([]);
 
   get places() {
     return this._places.asObservable();
   }
 
   constructor(private authService: AuthService, private http: HttpClient) {}
+
+  fetchPlaces() {
+    return this.http.get<{[key: string]: PlaceData }>('https://ionic-angular-course-b87ef.firebaseio.com/offered-places.json')
+        .pipe(map(resData => {
+          const places = [];
+          for (const key in resData) {
+            if (resData.hasOwnProperty(key)) {
+              places.push(
+                  new Place(
+                      key,
+                      resData[key].title,
+                      resData[key].description,
+                      resData[key].imageUrl,
+                      resData[key].price,
+                      new Date(resData[key].availableFrom),
+                      new Date(resData[key].availableTo),
+                      resData[key].userId,
+                  )
+              );
+            }
+          }
+          return places;
+          // return [];
+        }),
+            tap(places => {
+              this._places.next(places);
+            })
+        );
+  }
 
   getPlace(id: string) {
     return this.places.pipe(
