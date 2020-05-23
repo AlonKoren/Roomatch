@@ -136,12 +136,19 @@ export class PlacesService {
   }
 
   updatePlace(placeId: string, title: string, description: string) {
-    return this.places.pipe(take(1), delay(1000), tap(places => {
-      const updatedPlaceIndex = places.findIndex(pl => pl.id === placeId);
-      const updatedPlaces = [...places];
-      const oldPlace = updatedPlaces[updatedPlaceIndex];
-      updatedPlaces[updatedPlaceIndex] = new Place(oldPlace.id, title, description, oldPlace.imageUrl, oldPlace.price, oldPlace.availableFrom, oldPlace.availableTo, oldPlace.userId);
-      this._places.next(updatedPlaces);
-    }));
+      let updatedPlaces: Place[];
+      return this.places.pipe(
+          take(1), switchMap(places => {
+              const updatedPlaceIndex = places.findIndex(pl => pl.id === placeId);
+              updatedPlaces = [...places];
+              const oldPlace = updatedPlaces[updatedPlaceIndex];
+              // tslint:disable-next-line:max-line-length
+              updatedPlaces[updatedPlaceIndex] = new Place(oldPlace.id, title, description, oldPlace.imageUrl, oldPlace.price, oldPlace.availableFrom, oldPlace.availableTo, oldPlace.userId);
+              return this.http.put(`https://ionic-angular-course-b87ef.firebaseio.com/offered-places/${placeId}.json`,
+                  { ...updatedPlaces[updatedPlaceIndex], id: null }
+                  );
+          }), tap(() => {
+              this._places.next(updatedPlaces);
+          }));
   }
 }
