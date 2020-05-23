@@ -7,7 +7,7 @@ export class AuthService {
   // tslint:disable-next-line:variable-name
   private _userIsAuthenticated = true;
   // tslint:disable-next-line:variable-name
-  private _userId = 'abc';
+  private _userId = 'xyz';
 
   get userIsAuthenticated() {
     return this._userIsAuthenticated;
