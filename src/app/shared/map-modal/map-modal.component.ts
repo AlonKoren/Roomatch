@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {ModalController} from '@ionic/angular';
 import { environment } from '../../../environments/environment';
 
@@ -7,8 +7,10 @@ import { environment } from '../../../environments/environment';
   templateUrl: './map-modal.component.html',
   styleUrls: ['./map-modal.component.scss'],
 })
-export class MapModalComponent implements OnInit, AfterViewInit {
+export class MapModalComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('map', { static: false }) mapElementRef: ElementRef;
+  clickListener: any;
+  googleMaps: any;
 
   constructor(
       private modalCtrl: ModalController,
@@ -18,20 +20,21 @@ export class MapModalComponent implements OnInit, AfterViewInit {
   ngOnInit() {}
 
   ngAfterViewInit() {}
-  
+
   ionViewDidEnter() {
     this.getGoogleMaps().then(googleMaps => {
+      this.googleMaps = googleMaps;
       const mapEl = this.mapElementRef.nativeElement;
       const map = new googleMaps.Map(mapEl, {
         center: { lat: 32.350838, lng: 34.868458 },
         zoom: 16
       });
 
-      googleMaps.event.addListenerOnce(map, 'idle', () => {
+      this.googleMaps.event.addListenerOnce(map, 'idle', () => {
         this.renderer.addClass(mapEl, 'visible');
       });
 
-      map.addListener('click', event => {
+      this.clickListener = map.addListener('click', event => {
         const selectedCoords = {
           lat: event.latLng.lat(),
           lng: event.latLng.lng()
@@ -45,6 +48,10 @@ export class MapModalComponent implements OnInit, AfterViewInit {
 
   onCancel() {
     this.modalCtrl.dismiss();
+  }
+
+  ngOnDestroy() {
+    this.googleMaps.event.removeListener(this.clickListener);
   }
 
   private getGoogleMaps(): Promise<any> {
