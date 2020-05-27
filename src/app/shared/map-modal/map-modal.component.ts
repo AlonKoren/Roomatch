@@ -17,7 +17,9 @@ export class MapModalComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {}
 
-  ngAfterViewInit() {
+  ngAfterViewInit() {}
+  
+  ionViewDidEnter() {
     this.getGoogleMaps().then(googleMaps => {
       const mapEl = this.mapElementRef.nativeElement;
       const map = new googleMaps.Map(mapEl, {
