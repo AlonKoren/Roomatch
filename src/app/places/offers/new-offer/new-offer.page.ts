@@ -13,7 +13,7 @@ function base64toBlob(base64Data, contentType) {
   const slicesCount = Math.ceil(bytesLength / sliceSize);
   const byteArrays = new Array(slicesCount);
 
-  for (let sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+  for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
     const begin = sliceIndex * sliceSize;
     const end = Math.min(begin + sliceSize, bytesLength);
 
@@ -87,9 +87,10 @@ export class NewOfferPage implements OnInit {
   }
 
   onCreateOffer() {
-    if (!this.form.valid) {
+    if (!this.form.valid || !this.form.get('image').value) {
       return;
     }
+    console.log(this.form.value);
     this.loadingCtrl.create({
       message: 'Creating place...'
     }).then(loadingEl => {
