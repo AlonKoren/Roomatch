@@ -8,8 +8,10 @@ const { v4: uuid } = require('uuid');
 
 const { Storage } = require('@google-cloud/storage');
 
+
 const storage = new Storage({
-    projectId: 'ionic-angular-course-b87ef'
+    projectId: "ionic-angular-course-b87ef",
+    keyFilename: "./ionic-angular-admin-key.json"
 });
 
 exports.storeImage = functions.https.onRequest((req, res) => {
@@ -33,15 +35,15 @@ exports.storeImage = functions.https.onRequest((req, res) => {
 
         busboy.on('finish', () => {
             const id = uuid();
-            let imagePath = 'images/' + id + '-' + uploadData.name;
+            let imagePath = 'images/' + id + '-' + uploadData.name +'.jpeg';
             if (oldImagePath) {
                 imagePath = oldImagePath;
             }
 
-            console.log(uploadData.type);
             return storage
-                .bucket('ionic-angular-course-b87ef.appspot.com')
+                .bucket(storage.projectId + '.appspot.com')
                 .upload(uploadData.filePath, {
+                    gzip: true,
                     uploadType: 'media',
                     destination: imagePath,
                     metadata: {
@@ -56,7 +58,7 @@ exports.storeImage = functions.https.onRequest((req, res) => {
                     return res.status(201).json({
                         imageUrl:
                             'https://firebasestorage.googleapis.com/v0/b/' +
-                            storage.bucket('ionic-angular-course-b87ef.appspot.com').name +
+                            storage.bucket(storage.projectId + '.appspot.com').name +
                             '/o/' +
                             encodeURIComponent(imagePath) +
                             '?alt=media&token=' +

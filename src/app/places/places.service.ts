@@ -5,6 +5,7 @@ import {BehaviorSubject, of} from 'rxjs';
 import {delay, map, switchMap, take, tap} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {PlaceLocation} from './location.model';
+import {environment} from '../../environments/environment';
 
 // [
 //   new Place(
@@ -47,14 +48,14 @@ interface PlaceData {
   price: number;
   title: string;
   userId: string;
-  location: PlaceLocation
+  location: PlaceLocation;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlacesService {
-  // tslint:disable-next-line:variable-name
+    // tslint:disable-next-line:variable-name
   private _places = new BehaviorSubject<Place[]>([]);
 
   get places() {
@@ -64,7 +65,7 @@ export class PlacesService {
   constructor(private authService: AuthService, private http: HttpClient) {}
 
   fetchPlaces() {
-    return this.http.get<{[key: string]: PlaceData }>('https://ionic-angular-course-b87ef.firebaseio.com/offered-places.json')
+    return this.http.get<{[key: string]: PlaceData }>('https://' + environment.projectIdFirebase + '.firebaseio.com/offered-places.json')
         .pipe(map(resData => {
           const places = [];
           for (const key in resData) {
@@ -95,7 +96,7 @@ export class PlacesService {
 
   getPlace(id: string) {
     return this.http.get<PlaceData>(
-        `https://ionic-angular-course-b87ef.firebaseio.com/offered-places/${id}.json`
+        `https://${environment.projectIdFirebase}.firebaseio.com/offered-places/${id}.json`
     )
         .pipe(
             map(placeData => {
@@ -114,13 +115,23 @@ export class PlacesService {
         );
   }
 
-  addPlace(title: string, description: string, price: number, dateFrom: Date, dateTo: Date, location: PlaceLocation) {
+  uploadImage(image: File) {
+      const uploadData = new FormData();
+      uploadData.append('image', image);
+
+      return this.http.post<{imageUrl: string, imagePath: string}>(
+          'https://' + environment.serverLocation + '-' + environment.projectIdFirebase + '.cloudfunctions.net/storeImage',
+          uploadData
+      );
+  }
+
+  addPlace(title: string, description: string, price: number, dateFrom: Date, dateTo: Date, location: PlaceLocation, imageUrl: string) {
     let generatedId: string;
     const newPlace = new Place(
         Math.random().toString(),
         title,
         description,
-        'https://www.filmlocationswanted.com/wp-content/uploads/2015/06/manhattan-estate-mansion60.jpg',
+        imageUrl,
         price,
         dateFrom,
         dateTo,
@@ -128,7 +139,7 @@ export class PlacesService {
         location
     );
     return this.http
-        .post<{name: string}>('https://ionic-angular-course-b87ef.firebaseio.com/offered-places.json', {
+        .post<{name: string}>('https://' + environment.projectIdFirebase + '.firebaseio.com/offered-places.json', {
           ...newPlace,
           id: null
         })
@@ -175,7 +186,7 @@ export class PlacesService {
                   oldPlace.userId,
                   oldPlace.location,
               );
-              return this.http.put(`https://ionic-angular-course-b87ef.firebaseio.com/offered-places/${placeId}.json`,
+              return this.http.put(`https://${environment.projectIdFirebase}.firebaseio.com/offered-places/${placeId}.json`,
                   { ...updatedPlaces[updatedPlaceIndex], id: null }
               );
           }),
