@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {AuthService} from './auth.service';
+import {AuthResponseData, AuthService} from './auth.service';
 import {Router} from '@angular/router';
 import {AlertController, LoadingController} from '@ionic/angular';
 import {NgForm} from '@angular/forms';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-auth',
@@ -25,11 +26,17 @@ export class AuthPage implements OnInit {
 
   authenticate(email: string, password: string) {
     this.isLoading = true;
-    this.authService.login();
     this.loadingCtrl.create({ keyboardClose: true, message: 'Logging in...' })
         .then(loadingEl => {
           loadingEl.present();
-          this.authService.signup(email, password).subscribe(resData => {
+          // tslint:disable-next-line:prefer-const
+          let authObs: Observable<AuthResponseData>;
+          if (this.isLogin) {
+            authObs = this.authService.login(email, password);
+          } else {
+            authObs = this.authService.signup(email, password);
+          }
+          authObs.subscribe(resData => {
             console.log(resData);
             this.isLoading = false;
             loadingEl.dismiss();
@@ -40,6 +47,10 @@ export class AuthPage implements OnInit {
             let message = 'Could not sign you up, please try again.';
             if (code === 'EMAIL_EXISTS') {
               message = 'The email address is already in use by another account.';
+            } else if (code === 'EMAIL_NOT_FOUND') {
+              message = 'E-Mail address could not be found.';
+            } else if (code === 'INVALID_PASSWORD') {
+              message = 'The password is invalid.';
             }
             this.showAlert(message);
           });
