@@ -100,7 +100,7 @@ export class AuthService {
         `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${
             environment.firebaseAPIKey
         }`,
-        {email, password}
+        { email, password, returnSecureToken: true }
         ).pipe(tap(this.setUserData.bind(this)));
   }
 
