@@ -65,73 +65,95 @@ export class PlacesService {
   constructor(private authService: AuthService, private http: HttpClient) {}
 
   fetchPlaces() {
-    return this.http.get<{[key: string]: PlaceData }>('https://' + environment.projectIdFirebase + '.firebaseio.com/offered-places.json')
-        .pipe(map(resData => {
-          const places = [];
-          for (const key in resData) {
-            if (resData.hasOwnProperty(key)) {
-              places.push(
-                  new Place(
-                      key,
-                      resData[key].title,
-                      resData[key].description,
-                      resData[key].imageUrl,
-                      resData[key].price,
-                      new Date(resData[key].availableFrom),
-                      new Date(resData[key].availableTo),
-                      resData[key].userId,
-                      resData[key].location,
-                  )
-              );
-            }
-          }
-          return places;
-          // return [];
-        }),
-            tap(places => {
+      return this.authService.token.pipe(
+          take(1),
+          switchMap(token => {
+              return this.http
+                  .get<{[key: string]: PlaceData }>(
+                      `https://${environment.projectIdFirebase}.firebaseio.com/offered-places.json?auth=${token}`
+                  );
+          }),
+          map(resData => {
+              const places = [];
+              for (const key in resData) {
+                  if (resData.hasOwnProperty(key)) {
+                      places.push(
+                          new Place(
+                              key,
+                              resData[key].title,
+                              resData[key].description,
+                              resData[key].imageUrl,
+                              resData[key].price,
+                              new Date(resData[key].availableFrom),
+                              new Date(resData[key].availableTo),
+                              resData[key].userId,
+                              resData[key].location,
+                              )
+                      );
+                  }
+              }
+              return places;
+          }),
+          tap(places => {
               this._places.next(places);
-            })
-        );
+          })
+      );
   }
 
   getPlace(id: string) {
-    return this.http.get<PlaceData>(
-        `https://${environment.projectIdFirebase}.firebaseio.com/offered-places/${id}.json`
-    )
-        .pipe(
-            map(placeData => {
-                return new Place(
-                    id,
-                    placeData.title,
-                    placeData.description,
-                    placeData.imageUrl,
-                    placeData.price,
-                    new Date(placeData.availableFrom),
-                    new Date(placeData.availableTo),
-                    placeData.userId,
-                    placeData.location
-                );
-            })
-        );
+      return this.authService.token.pipe(
+          take(1),
+          switchMap(token => {
+              return this.http
+                  .get<PlaceData>(
+                      `https://${environment.projectIdFirebase}.firebaseio.com/offered-places/${id}.json?auth=${token}`
+                  );
+          }),
+          map(placeData => {
+              return new Place(
+                  id,
+                  placeData.title,
+                  placeData.description,
+                  placeData.imageUrl,
+                  placeData.price,
+                  new Date(placeData.availableFrom),
+                  new Date(placeData.availableTo),
+                  placeData.userId,
+                  placeData.location
+              );
+          })
+      );
   }
 
   uploadImage(image: File) {
       const uploadData = new FormData();
       uploadData.append('image', image);
 
-      return this.http.post<{imageUrl: string, imagePath: string}>(
-          'https://' + environment.serverLocation + '-' + environment.projectIdFirebase + '.cloudfunctions.net/storeImage',
-          uploadData
+      return this.authService.token.pipe(
+          take(1),
+          switchMap(token => {
+              return this.http.post<{imageUrl: string, imagePath: string}>(
+                  'https://' + environment.serverLocation + '-' + environment.projectIdFirebase + '.cloudfunctions.net/storeImage',
+                  uploadData,
+                  { headers: { Authorization: 'Bearer ' + token } }
+              );
+          })
       );
   }
 
   addPlace(title: string, description: string, price: number, dateFrom: Date, dateTo: Date, location: PlaceLocation, imageUrl: string) {
     let generatedId: string;
+    let fetchedUserId: string;
     let newPlace: Place;
     return this.authService.userId.pipe(
         take(1),
         switchMap(userId => {
-            if (!userId) {
+            fetchedUserId = userId;
+            return this.authService.token;
+        }),
+        take(1),
+        switchMap(token => {
+            if (!fetchedUserId) {
                 throw new Error('No user found!');
             }
             newPlace = new Place(
@@ -142,37 +164,38 @@ export class PlacesService {
                 price,
                 dateFrom,
                 dateTo,
-                userId,
+                fetchedUserId,
                 location
             );
-            return this.http
-                .post<{ name: string }>('https://' + environment.projectIdFirebase + '.firebaseio.com/offered-places.json', {
+            return this.http.post<{ name: string }>(`https://${environment.projectIdFirebase}.firebaseio.com/offered-places.json?auth=${token}`,
+                {
                     ...newPlace,
                     id: null
                 });
         }),
-            switchMap(resData => {
-              generatedId = resData.name;
-              return this.places;
-            }),
-            take(1),
-            tap(places => {
-              newPlace.id = generatedId;
-              this._places.next(places.concat(newPlace));
-            })
-        );
-    // return this.places.pipe(
-    //     take(1),
-    //     delay(1000),
-    //     tap(places => {
-    //       this._places.next(places.concat(newPlace));
-    //     }));
+        switchMap(resData => {
+            generatedId = resData.name;
+            return this.places;
+        }),
+        take(1),
+        tap(places => {
+            newPlace.id = generatedId;
+            this._places.next(places.concat(newPlace));
+        })
+    );
   }
 
   updatePlace(placeId: string, title: string, description: string) {
       let updatedPlaces: Place[];
-      return this.places.pipe(
-          take(1), switchMap(places => {
+      let fetchedToken: string;
+      return this.authService.token.pipe(
+          take(1),
+          switchMap(token => {
+              fetchedToken = token;
+              return this.places;
+          }),
+          take(1),
+          switchMap(places => {
               if (!places || places.length <= 0) {
                   return this.fetchPlaces();
               } else {
@@ -193,12 +216,14 @@ export class PlacesService {
                   oldPlace.userId,
                   oldPlace.location,
               );
-              return this.http.put(`https://${environment.projectIdFirebase}.firebaseio.com/offered-places/${placeId}.json`,
+              return this.http.put(
+                  `https://${environment.projectIdFirebase}.firebaseio.com/offered-places/${placeId}.json?auth=${fetchedToken}`,
                   { ...updatedPlaces[updatedPlaceIndex], id: null }
-              );
+                  );
           }),
           tap(() => {
               this._places.next(updatedPlaces);
-          }));
+          })
+      );
   }
 }
