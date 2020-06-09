@@ -40,7 +40,7 @@ export class AuthPage implements OnInit {
             console.log(resData);
             this.isLoading = false;
             loadingEl.dismiss();
-            this.router.navigateByUrl('/places/tabs/discover');
+            this.router.navigateByUrl('/places/tabs/discover'); // TODO navigate to shelon
           }, errRes => {
             loadingEl.dismiss();
             const code = errRes.error.error.message;

@@ -1,6 +1,6 @@
 {
-  "appId": "com.course.ionic-angular",
-  "appName": "ionic-angular-course",
+  "appId": "com.roomatch",
+  "appName": "roomatch",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",

@@ -11,12 +11,12 @@ const { Storage } = require('@google-cloud/storage');
 
 
 const storage = new Storage({
-    projectId: "ionic-angular-course-b87ef",
-    keyFilename: "./ionic-angular-admin-key.json"
+    projectId: "roomatch-ak",
+    keyFilename: "./roomatch-ak-admin-storage-key.json"
 });
 
 fbAdmin.initializeApp({
-    credential: fbAdmin.credential.cert(require('./ionic-app.json'))
+    credential: fbAdmin.credential.cert(require('./roomatch-ak-firebase-adminsdk.json'))
 });
 
 exports.storeImage = functions.https.onRequest((req, res) => {
