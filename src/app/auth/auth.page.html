@@ -10,6 +10,41 @@
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <ion-list>
+            <div *ngIf="!isLogin" lines="none">
+              <ion-item>
+                <ion-label position="floating">First Name</ion-label>
+                <ion-input
+                        type="text"
+                        ngModel
+                        name="firstName"
+                        required
+                        #firstNameCtrl="ngModel">
+                </ion-input>
+              </ion-item>
+              <ion-item *ngIf="!firstNameCtrl.valid && firstNameCtrl.touched" lines="none">
+                <ion-label>
+                  Should be a valid first name.
+                </ion-label>
+              </ion-item>
+
+              <ion-item>
+                <ion-label position="floating">Last Name</ion-label>
+                <ion-input
+                        type="text"
+                        ngModel
+                        name="lastName"
+                        required
+                        #lastNameCtrl="ngModel">
+                </ion-input>
+              </ion-item>
+              <ion-item *ngIf="!lastNameCtrl.valid && lastNameCtrl.touched" lines="none">
+                <ion-label>
+                  Should be a valid last name.
+                </ion-label>
+              </ion-item>
+
+            </div>
+
             <ion-item>
               <ion-label position="floating">E-Mail</ion-label>
               <ion-input
@@ -42,6 +77,97 @@
                 Should at least be 6 characters long.
               </ion-label>
             </ion-item>
+
+            <div *ngIf="!isLogin" lines="none">
+
+              <ion-item>
+                <ion-label position="floating">Phone</ion-label>
+                <ion-input
+                        type="number"
+                        ngModel
+                        name="phone"
+                        required
+                        minlength="10"
+                        #phoneCtrl="ngModel">
+                </ion-input>
+              </ion-item>
+              <ion-item *ngIf="!phoneCtrl.valid && phoneCtrl.touched" lines="none">
+                <ion-label>
+                  Should at least be 10 characters long.
+                </ion-label>
+              </ion-item>
+
+              <ion-item>
+                <ion-label>Age</ion-label>
+                <ion-select
+                        name="age"
+                        type="number"
+                        ngModel
+                        required
+                        #ageSelectedCtrl="ngModel">
+                  <ion-select-option  *ngFor="let age of ages" value="{{ age }}">{{ age }}</ion-select-option>
+                </ion-select>
+              </ion-item>
+              <ion-item *ngIf="!ageSelectedCtrl.valid && ageSelectedCtrl.touched" lines="none">
+                <ion-label>
+                  Should be a valid Age.
+                </ion-label>
+              </ion-item>
+
+              <ion-item>
+                <ion-label position="floating">Estimated budget</ion-label>
+                <ion-input
+                        type="number"
+                        ngModel
+                        name="budget"
+                        required
+                        min="0"
+                        #estimatedBudgetCtrl="ngModel">
+                </ion-input>
+              </ion-item>
+              <ion-item *ngIf="!estimatedBudgetCtrl.valid && estimatedBudgetCtrl.touched" lines="none">
+                <ion-label>
+                  Should be a valid budget.
+                </ion-label>
+              </ion-item>
+
+                <ion-item>
+                  <ion-label>Preferred area</ion-label>
+                  <ion-select
+                          name="area"
+                          ngModel
+                          required
+                          #areaSelectedCtrl="ngModel">
+                    <ion-select-option value="north">North</ion-select-option>
+                    <ion-select-option value="sharon">Sharon area</ion-select-option>
+                    <ion-select-option value="center">Center</ion-select-option>
+                    <ion-select-option value="south">South</ion-select-option>
+                  </ion-select>
+                </ion-item>
+              <ion-item *ngIf="!areaSelectedCtrl.valid && areaSelectedCtrl.touched" lines="none">
+                <ion-label>
+                  Should be a valid area.
+                </ion-label>
+              </ion-item>
+
+              <ion-item>
+                <ion-label position="floating">More details</ion-label>
+                <ion-textarea
+                        rows="3"
+                        value=""
+                        name="MoreDetails"
+                        ngModel
+                        ></ion-textarea>
+              </ion-item>
+
+
+                <app-image-picker
+                        [showPreview]="form.get('image').value"
+                        (imagePick)="onImagePicked($event)">
+                </app-image-picker>
+
+            </div>
+
           </ion-list>
         </ion-col>
       </ion-row>
