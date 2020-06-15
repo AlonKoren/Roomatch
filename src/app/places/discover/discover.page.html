@@ -60,9 +60,9 @@
             <ion-item [routerLink]="['/', 'places', 'tabs', 'discover', place.id]"
                       detail
                       *virtualItem="let place">
-              <ion-thumbnail slot="start">
+              <ion-avatar slot="start">
                 <ion-img [src]="place.imageUrl"></ion-img>
-              </ion-thumbnail>
+              </ion-avatar>
               <ion-label>
                 <h2>{{ place.title }}</h2>
                 <p>{{ place.description }}</p>

@@ -11,7 +11,7 @@ export class ImagePickerComponent implements OnInit {
   @ViewChild('filePicker', { static: false }) filePickerRef: ElementRef<HTMLInputElement>;
   @Output() imagePick = new EventEmitter<string | File>();
   @Input() showPreview = false;
-  selectedImage: string;
+  @Input() selectedImage: string;
   usePicker = false;
 
   constructor(
@@ -65,6 +65,11 @@ export class ImagePickerComponent implements OnInit {
       this.imagePick.emit(pickedFile);
     };
     fr.readAsDataURL(pickedFile);
+  }
+
+  setImageFromURL(imageUrl: string) {
+    this.selectedImage = imageUrl;
+    this.imagePick.emit(imageUrl);
   }
 
 }

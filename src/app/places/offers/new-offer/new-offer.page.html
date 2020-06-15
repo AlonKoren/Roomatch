@@ -1,11 +1,12 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/places/tabs/offers"></ion-back-button>
+      <ion-back-button [defaultHref]="'/places/tabs/offers'"></ion-back-button>
     </ion-buttons>
-    <ion-title>New Offer</ion-title>
+    <ion-title>Edit Profile</ion-title>
     <ion-buttons slot="primary">
-      <ion-button (click)="onCreateOffer()" [disabled]="!form.valid || !form.get('image').value">
+<!--      <ion-button (click)="onUpdateProfile()" [disabled]="!form?.valid || !form.get('image').value">-->
+      <ion-button (click)="onUpdateProfile()" [disabled]="!form?.valid">
         <ion-icon name="checkmark" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -13,64 +14,82 @@
 </ion-header>
 
 <ion-content>
-  <form [formGroup]="form">
+  <div *ngIf="isLoading" class="ion-text-center">
+    <ion-spinner color="primary"></ion-spinner>
+  </div>
+  <form [formGroup]="form" *ngIf="!isLoading">
     <ion-grid>
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
-            <ion-label position="floating">Title</ion-label>
-            <ion-input type="text" autocomplete autocorrect formControlName="title"></ion-input>
+            <ion-label position="floating">First Name</ion-label>
+            <ion-input type="text" autocomplete autocorrect formControlName="firstName"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
-            <ion-label position="floating">Short Description</ion-label>
-            <ion-textarea rows="3" formControlName="description"></ion-textarea>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-      <ion-row *ngIf="!form.get('description').valid && form.get('description').touched">
-        <ion-col size-sm="6" offset-sm="3">
-          <p>Description must be between 1 and 180 characters.</p>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size-sm="6" offset-sm="3">
-          <ion-item>
-            <ion-label position="floating">Price</ion-label>
-            <ion-input type="number" formControlName="price"></ion-input>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size-sm="3" offset-sm="3">
-          <ion-item>
-            <ion-label position="floating">Available from</ion-label>
-            <ion-datetime min="2020-01-01" max="2030-01-01" formControlName="dateFrom"></ion-datetime>
-          </ion-item>
-        </ion-col>
-        <ion-col size-sm="3">
-          <ion-item>
-            <ion-label position="floating">Available to</ion-label>
-            <ion-datetime min="2020-01-02" max="2030-01-02" formControlName="dateTo"></ion-datetime>
+            <ion-label position="floating">Last Name</ion-label>
+            <ion-input type="text" autocomplete autocorrect formControlName="lastName"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
-          <app-location-picker
-                  [showPreview]="form.get('location').value"
-                  (locationPick)="onLocationPicked($event)">
-          </app-location-picker>
+          <ion-item>
+            <ion-label position="floating">Phone</ion-label>
+            <ion-input type="text" formControlName="phone"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-item>
+            <ion-label>Age</ion-label>
+            <ion-select type="number" formControlName="age">
+              <ion-select-option  *ngFor="let age of ages" value="{{ age }}">{{ age }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-item>
+            <ion-label position="floating">Estimated budget</ion-label>
+            <ion-input type="number" formControlName="budget"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-item>
+            <ion-label>Preferred area</ion-label>
+            <ion-select formControlName="area">
+              <ion-select-option value="north">North</ion-select-option>
+              <ion-select-option value="sharon">Sharon area</ion-select-option>
+              <ion-select-option value="center">Center</ion-select-option>
+              <ion-select-option value="south">South</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-item>
+            <ion-label position="floating">More details</ion-label>
+            <ion-textarea rows="3" formControlName="MoreDetails"></ion-textarea>
+          </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <app-image-picker
-                  [showPreview]="form.get('image').value"
-                  (imagePick)="onImagePicked($event)">
+                  [showPreview]="true"
+                  [selectedImage]="myUser.imageUrl"
+                  (imagePick)="onImagePicked($event)"
+                  >
           </app-image-picker>
         </ion-col>
       </ion-row>

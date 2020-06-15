@@ -1,7 +1,7 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
-import {BehaviorSubject, from, of} from 'rxjs';
+import {BehaviorSubject, from, Observable, of} from 'rxjs';
 import {User} from './user.model';
 import {map, switchMap, take, tap} from 'rxjs/operators';
 import { Plugins } from '@capacitor/core';
@@ -263,7 +263,7 @@ export class AuthService implements OnDestroy {
         );
     }
 
-    uploadImage(image: File) {
+    uploadImage(image: File): Observable<{imageUrl: string, imagePath: string}> {
         const uploadData = new FormData();
         uploadData.append('image', image);
 
@@ -366,7 +366,7 @@ export class AuthService implements OnDestroy {
                     imageUrl,
                 );
                 return this.http.put(
-                    `https://${environment.projectIdFirebase}.firebaseio.com/offered-places/${userId}.json?auth=${fetchedToken}`,
+                    `https://${environment.projectIdFirebase}.firebaseio.com/users/${userId}.json?auth=${fetchedToken}`,
                     { ...updatedUsers[updatedUserIndex], id: null }
                 );
             }),
