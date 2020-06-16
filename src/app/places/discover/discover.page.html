@@ -3,14 +3,14 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Discover Places</ion-title>
+    <ion-title>Discover Users</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-segment value="all" (ionChange)="onFilterUpdate($event)">
-    <ion-segment-button value="all">All Places</ion-segment-button>
-    <ion-segment-button value="bookable">Bookacle Places</ion-segment-button>
+  <ion-segment value="all"  (ionChange)="onFilterUpdate($event)">
+    <ion-segment-button value="all">All Users</ion-segment-button>
+    <ion-segment-button value="favorites">Favorites</ion-segment-button>
   </ion-segment>
   <ion-grid *ngIf="isLoading">
     <ion-row>
@@ -19,14 +19,14 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <ion-grid *ngIf="!isLoading && (!relevantPlaces || relevantPlaces.length <= 0)">
+  <ion-grid *ngIf="!isLoading && (!relevantUsers || relevantUsers.length <= 0)">
     <ion-row>
       <ion-col size="12" size-sm="8" offset-sm="2" class="ion-text-center">
         <p>There are no bookable places right now, please come back later!</p>
       </ion-col>
     </ion-row>
   </ion-grid>
-  <ion-grid *ngIf="!isLoading && relevantPlaces.length > 0">
+  <ion-grid *ngIf="!isLoading && relevantUsers.length > 0">
 <!--    <ion-row>-->
 <!--      <ion-col size="12" size-sm="8" offset-sm="2" class="ion-text-center">-->
 <!--        <ion-card>-->
@@ -56,16 +56,15 @@
 <!--    </ion-row>-->
     <ion-row>
       <ion-col size="12" size-sm="8" offset-sm="2" class="ion-text-center">
-          <ion-virtual-scroll [items]="listedLoadedPlaces" approxItemHeight="70px">
-            <ion-item [routerLink]="['/', 'places', 'tabs', 'discover', place.id]"
+          <ion-virtual-scroll [items]="listedLoadedUsers" approxItemHeight="70px">
+            <ion-item [routerLink]="['/', 'places', 'tabs', 'discover', user.id]"
                       detail
-                      *virtualItem="let place">
+                      *virtualItem="let user">
               <ion-avatar slot="start">
-                <ion-img [src]="place.imageUrl"></ion-img>
+                <ion-img [src]="user.imageUrl"></ion-img>
               </ion-avatar>
               <ion-label>
-                <h2>{{ place.title }}</h2>
-                <p>{{ place.description }}</p>
+                <h2>{{ user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1) + ' ' + user.lastName.charAt(0).toUpperCase() + user.lastName.slice(1) }}</h2>
               </ion-label>
             </ion-item>
           </ion-virtual-scroll>

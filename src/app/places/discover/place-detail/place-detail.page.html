@@ -3,7 +3,8 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/places/tabs/discover"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ isLoading ? 'Loading...' : place.title }}</ion-title>
+    <ion-title>{{ isLoading ? 'Loading...' : myUser.firstName.charAt(0).toUpperCase() + myUser.firstName.slice(1) + ' ' +
+            myUser.lastName.charAt(0).toUpperCase() + myUser.lastName.slice(1) }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -14,27 +15,25 @@
   <ion-grid class="ion-no-padding" *ngIf="!isLoading">
     <ion-row>
       <ion-col size-sm="6" offset-sm="3" class="ion-no-padding">
-        <ion-img [src]="place.imageUrl"></ion-img>
+        <ion-avatar class="profileImg">
+          <ion-img  [src]="myUser.imageUrl"></ion-img>
+        </ion-avatar>
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size-sm="6" offset-sm="3" class="ion-text-center ion-padding">
-        <p>{{ place.description }}</p>
+      <ion-col size-sm="6" offset-sm="3" class="ion-no-padding ion-margin">
+        <p>{{ "Full name: " + myUser.firstName.charAt(0).toUpperCase() + myUser.firstName.slice(1) + ' ' + myUser.lastName.charAt(0).toUpperCase() + myUser.lastName.slice(1) }}</p>
+        <p>{{ "Phone number: " + myUser.phone }}</p>
+        <p>{{ "Age: " + myUser.age }}</p>
+        <p>{{ "My estimated budget: " + myUser.budget + "₪" }}</p>
+        <p>{{ "The area I'm looking to live in: " + myUser.area }}</p>
+        <p>{{ "More details about me: " + myUser.MoreDetails }}</p>
       </ion-col>
     </ion-row>
-    <ion-row>
-      <ion-col size-sm="6" offset-sm="3" class="ion-padding ion-text-center">
-        <p>{{ place.location.address }}</p>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size-sm="6" offset-sm="3" class="ion-no-padding">
-        <ion-img role="button" (click)="onShowFullMap()" class="location-image" [src]="place.location.staticMapImageUrl"></ion-img>
-      </ion-col>
-    </ion-row>
+
     <ion-row *ngIf="isBookable">
       <ion-col size-sm="6" offset-sm="3" class="ion-text-center">
-        <ion-button color="primary" class="ion-margin" (click)="onBookPlace()">Book</ion-button>
+        <ion-button color="primary" class="ion-margin" (click)="onBookPlace()"><ion-icon name="star-outline" slot="icon-only"></ion-icon></ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
