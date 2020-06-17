@@ -3,8 +3,8 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/places/tabs/discover"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ isLoading ? 'Loading...' : myUser.firstName.charAt(0).toUpperCase() + myUser.firstName.slice(1) + ' ' +
-            myUser.lastName.charAt(0).toUpperCase() + myUser.lastName.slice(1) }}</ion-title>
+    <ion-title>{{ isLoading ? 'Loading...' : hisUser.firstName.charAt(0).toUpperCase() + hisUser.firstName.slice(1) + ' ' +
+            hisUser.lastName.charAt(0).toUpperCase() + hisUser.lastName.slice(1) }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -16,24 +16,27 @@
     <ion-row>
       <ion-col size-sm="6" offset-sm="3" class="ion-no-padding">
         <ion-avatar class="profileImg">
-          <ion-img  [src]="myUser.imageUrl"></ion-img>
+          <ion-img  [src]="hisUser.imageUrl"></ion-img>
         </ion-avatar>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col size-sm="6" offset-sm="3" class="ion-no-padding ion-margin">
-        <p>{{ "Full name: " + myUser.firstName.charAt(0).toUpperCase() + myUser.firstName.slice(1) + ' ' + myUser.lastName.charAt(0).toUpperCase() + myUser.lastName.slice(1) }}</p>
-        <p>{{ "Phone number: " + myUser.phone }}</p>
-        <p>{{ "Age: " + myUser.age }}</p>
-        <p>{{ "My estimated budget: " + myUser.budget + "₪" }}</p>
-        <p>{{ "The area I'm looking to live in: " + myUser.area }}</p>
-        <p>{{ "More details about me: " + myUser.MoreDetails }}</p>
+        <p>{{ "Full name: " + hisUser.firstName.charAt(0).toUpperCase() + hisUser.firstName.slice(1) + ' ' + hisUser.lastName.charAt(0).toUpperCase() + hisUser.lastName.slice(1) }}</p>
+        <p>{{ "Phone number: " + hisUser.phone }}</p>
+        <p>{{ "Age: " + hisUser.age }}</p>
+        <p>{{ "My estimated budget: " + hisUser.budget + "₪" }}</p>
+        <p>{{ "The area I'm looking to live in: " + hisUser.area }}</p>
+        <p>{{ "More details about me: " + hisUser.MoreDetails }}</p>
       </ion-col>
     </ion-row>
 
-    <ion-row *ngIf="isBookable">
+    <ion-row>
       <ion-col size-sm="6" offset-sm="3" class="ion-text-center">
-        <ion-button color="primary" class="ion-margin" (click)="onBookPlace()"><ion-icon name="star-outline" slot="icon-only"></ion-icon></ion-button>
+        <ion-button color="primary" class="ion-margin" (click)="onFavorite()" fill="clear">
+          <ion-icon *ngIf="!isFavorite" name="star-outline" slot="icon-only"></ion-icon>
+          <ion-icon *ngIf="isFavorite" name="star" slot="icon-only"></ion-icon>
+        </ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

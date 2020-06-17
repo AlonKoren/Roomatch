@@ -4,7 +4,7 @@ import {Place} from '../place.model';
 import {ActionSheetController, AlertController, IonItemSliding, LoadingController, ModalController, NavController} from '@ionic/angular';
 import {ActivatedRoute, Router} from '@angular/router';
 import {of, Subscription} from 'rxjs';
-import {BookingService} from '../../bookings/booking.service';
+import {FavoriteService} from '../../favorites/favorite.service';
 import {AuthService} from '../../auth/auth.service';
 import {switchMap, take} from 'rxjs/operators';
 import {MyUser} from '../../auth/myUser.model';
@@ -27,7 +27,7 @@ export class OffersPage implements OnInit, OnDestroy {
       private navCtrl: NavController,
       private modalCtrl: ModalController,
       private actionSheetCtrl: ActionSheetController,
-      private bookingService: BookingService,
+      private bookingService: FavoriteService,
       private loadingCtrl: LoadingController,
       private authService: AuthService,
       private alertCtrl: AlertController,

@@ -7,7 +7,6 @@ import { IonicModule } from '@ionic/angular';
 import { PlaceDetailPageRoutingModule } from './place-detail-routing.module';
 
 import { PlaceDetailPage } from './place-detail.page';
-import {CreateBookingComponent} from '../../../bookings/create-booking/create-booking.component';
 import {SharedModule} from '../../../shared/shared.module';
 
 @NgModule({
@@ -18,7 +17,6 @@ import {SharedModule} from '../../../shared/shared.module';
     PlaceDetailPageRoutingModule,
     SharedModule
   ],
-  declarations: [PlaceDetailPage, CreateBookingComponent],
-  entryComponents: [CreateBookingComponent]
+  declarations: [PlaceDetailPage],
 })
 export class PlaceDetailPageModule {}

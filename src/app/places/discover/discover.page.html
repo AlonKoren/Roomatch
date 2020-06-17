@@ -22,7 +22,8 @@
   <ion-grid *ngIf="!isLoading && (!relevantUsers || relevantUsers.length <= 0)">
     <ion-row>
       <ion-col size="12" size-sm="8" offset-sm="2" class="ion-text-center">
-        <p>There are no bookable places right now, please come back later!</p>
+        <p *ngIf="mode === 'all'">There is currently no suitable users, please check back later!</p>
+        <p *ngIf="mode === 'favorites'">No favorites found!</p>
       </ion-col>
     </ion-row>
   </ion-grid>

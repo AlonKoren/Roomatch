@@ -18,8 +18,8 @@ const routes: Routes = [
     canLoad: [AuthGuard]
   },
   {
-    path: 'bookings',
-    loadChildren: () => import('./bookings/bookings.module').then( m => m.BookingsPageModule),
+    path: 'favorites',
+    loadChildren: () => import('./favorites/favorites.module').then( m => m.FavoritesPageModule),
     canLoad: [AuthGuard]
   },
 ];
