@@ -123,7 +123,11 @@ export class AuthPage implements OnInit {
                         )).subscribe(() => {
                     this.isLoading = false;
                     loadingEl.dismiss();
-                    this.router.navigateByUrl('/places/tabs/discover'); // TODO navigate to Q&A
+                    this.router.navigateByUrl('/questions1', {
+                        queryParams: {
+                            allowBack: false
+                        }
+                    }); // TODO navigate to Q&A
                 });
             } else {
                 this.isLoading = false;

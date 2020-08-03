@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="'/places/tabs/offers'" *ngIf="this.allowBack"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Questionnaire</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="onSubmit()" [disabled]="this.questions.length !== this.myAnsLen" >
+        <ion-icon name="checkmark" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="isLoading" class="ion-text-center">
+    <ion-spinner color="primary"></ion-spinner>
+  </div>
+    <ion-slides *ngIf="!isLoading" style="height:100%;" [pager]="true">
+      <ion-slide *ngFor="let q of questions" style="height:50%;">
+        <ion-list>
+          <ion-radio-group (ionChange)="radioGroupChange(q.question, $event.detail.value)">
+            <ion-list-header>
+              <ion-label style="font-size: x-large; text-align: left">
+                {{q.question}}
+              </ion-label>
+            </ion-list-header>
+            <br>
+            <br>
+            <br>
+            <ion-item *ngFor="let q1 of q.answers| keyvalue;">
+              <ion-label>{{q1.value}}</ion-label>
+              <ion-radio name="{{q1.key}}" value="{{q1.key}}"></ion-radio>
+            </ion-item>
+          </ion-radio-group>
+        </ion-list>
+      </ion-slide>
+    </ion-slides>
+</ion-content>

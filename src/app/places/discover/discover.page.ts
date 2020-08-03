@@ -28,10 +28,11 @@ export class DiscoverPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.usersSub = this.authService.users.subscribe(users => {
       this.loadedUsers = users;
-      // this.relevantUsers = this.loadedUsers;
-      // this.listedLoadedUsers = this.relevantUsers;
+
+      // TODO Filter loaded users by the algo
+      // TODO  by given myuserid to get all user ids the relative to me
+
       this.onFilterUpdate(this.mode);
-      // console.log('listedLoadedPlaces', this.listedLoadedPlaces);
     });
     this.favoritesSub = this.favoriteService.favorites.subscribe(value => {
       this.favArray = value.map(value1 => value1.favUserId);

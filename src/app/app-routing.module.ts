@@ -22,6 +22,11 @@ const routes: Routes = [
     loadChildren: () => import('./favorites/favorites.module').then( m => m.FavoritesPageModule),
     canLoad: [AuthGuard]
   },
+  {
+    path: 'questions1',
+    loadChildren: () => import('./questionnaires/questionnaire-1/questionnaire-1.module').then( m => m.Questionnaire1PageModule),
+    canLoad: [AuthGuard]
+  },
 ];
 
 @NgModule({
