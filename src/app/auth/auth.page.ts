@@ -123,6 +123,7 @@ export class AuthPage implements OnInit {
                         )).subscribe(() => {
                     this.isLoading = false;
                     loadingEl.dismiss();
+                    this.form.reset();
                     this.router.navigateByUrl('/questions1', {
                         queryParams: {
                             allowBack: false
@@ -132,6 +133,7 @@ export class AuthPage implements OnInit {
             } else {
                 this.isLoading = false;
                 loadingEl.dismiss();
+                this.form.reset();
                 this.router.navigateByUrl('/places/tabs/discover');
             }
           }, errRes => {
@@ -167,7 +169,6 @@ export class AuthPage implements OnInit {
     const budget = form.value.budget;
     const area = form.value.area;
     const MoreDetails = form.value.MoreDetails;
-    // const image = form.value.image;
     const user = {
         firstName,
         lastName,
@@ -178,7 +179,6 @@ export class AuthPage implements OnInit {
         budget,
         area,
         MoreDetails,
-        // image,
     };
 
     console.log(user);
